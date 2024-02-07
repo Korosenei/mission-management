@@ -1,0 +1,159 @@
+<div class="header " xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+     xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <!-- START MOBILE CONTROLS -->
+    <!-- LEFT SIDE -->
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg['confirmation.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                         icon="ui-icon-check"/>
+        <p:commandButton value="#{msg['confirmation.no']}" type="button" styleClass="ui-confirmdialog-no"
+                         icon="ui-icon-close"/>
+    </p:confirmDialog>
+    <div class="pull-left full-height visible-sm visible-xs">
+        <!-- START ACTION BAR -->
+
+        <div class="sm-action-bar">
+            <a href="#" class="btn-link toggle-sidebar" data-toggle="sidebar">
+                <span class="icon-set menu-hambuger"/>
+            </a>
+        </div>
+        <!-- END ACTION BAR -->
+
+        <div class="sm-action-bar">
+            <a id="horizontal-menu-toggle" href="#" class="hidden">
+                <span class="icon-set menu-hambuger"/>
+            </a>
+        </div>
+    </div>
+    <!-- RIGHT SIDE -->
+
+    <div class="pull-right full-height visible-sm visible-xs">
+        <!-- START ACTION BAR -->
+
+        <div class="sm-action-bar">
+            <a href="#" class="btn-link" data-toggle="quickview" data-toggle-element="#quickview">
+                <span class="icon-set menu-hambuger-plus"/>
+            </a>
+        </div>
+        <!-- END ACTION BAR -->
+    </div>
+    <!-- END MOBILE CONTROLS -->
+
+    <div class="pull-center sm-table">
+
+        <div class="header-inner">
+            <a href="#" class="toggle-secondary-sidebar">Inbox <span class="text-info">(12)</span> <span
+                    class="caret"/></a>
+
+            <div class="brand inline">
+                <img src="assets/img/demo/miss.png" alt="logo" data-src="assets/img/demo/miss.png"
+                     data-src-retina="assets/img/logo_2x.png" width="55%" height="100%"/>
+            </div>
+
+            <ul class="notification-list no-margin hidden-sm hidden-xs b-grey b-l b-r no-style p-l-30 p-r-20">
+                <c:if test="#{missionView.daf and request.requestURL.toString().contains('missions')}">
+
+                    <li class="p-r-15 inline">
+                        <p:commandLink process="@this"
+                                       onstart="showNotification('#{msg['mission.notification.success.print']}','success')"
+                                       onerror="showNotification('#{msg['mission.notification.error.print']}','error')"
+                                       actionListener="#{missionView.printOrderVirement()}"
+                                       class="btn btn-complete btn-cons m-l-10">
+                            #{msg['mission.button.printOrderVirement']}
+                        </p:commandLink>
+                    </li>
+                    <li class="p-r-15 inline">
+                        <p:commandButton icon="ui-icon-search" class="btn btn-cons m-l-10"
+                                         value="#{msg['mission.button.search']}" type="button"
+                                         onclick="PF('dlg1').show();"/>
+                    </li>
+
+                    <p:messages style="position: absolute;" for="decompteError" id="decompteError" showDetail="true"
+                                autoUpdate="true" closable="true"/>
+
+                </c:if>
+                <!--<li class="p-r-20 inline">-->
+                <!--<a href="#" id="mark-email" class="mark-email text-info m-l-20"><i-->
+                <!--class="fa fa-pencil fs-16"/></a>-->
+                <!--</li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class=" pull-right">
+
+        <div class="header-inner">
+            <a href="#" class="btn-link icon-set menu-hambuger-plus m-l-20 sm-no-margin hidden-sm hidden-xs"
+               data-toggle="quickview" data-toggle-element="#quickview"/>
+        </div>
+    </div>
+
+    <div class=" pull-right">
+        <!-- START User Info-->
+        <div class="visible-lg visible-md m-t-10">
+
+            <div class="pull-left p-r-10 p-t-10 fs-16 font-heading">
+                <span class="semi-bold">#{applicationBean.connectedEmploye.prenom}
+                    </span> <span class="text-master">#{applicationBean.connectedEmploye.nom}</span>
+            </div>
+
+            <div class="dropdown pull-right">
+                <button class="profile-dropdown-toggle" type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                <span class="thumbnail-wrapper d32 circular inline m-t-5">
+                <img src="assets/img/profiles/avatar.jpg" alt="" data-src="assets/img/profiles/avatar.jpg"
+                     data-src-retina="assets/img/profiles/avatar_small2x.jpg" width="32" height="32"/>
+            </span>
+                </button>
+
+                <ul class="dropdown-menu profile-dropdown" role="menu">
+
+                    <li>
+                        <p:commandButton class="btn btn-cons m-l-10"
+                                         value="#{msg['login.password']}" type="button"
+                                         onclick="PF('passwordDlg').show();"/>
+
+                    </li>
+
+                    <li class="bg-master-lighter">
+                        <a href="/logout" class="clearfix">
+                            <span class="pull-left">#{msg['login.logout']}</span>
+                            <span class="pull-right"><i class="pg-power"/></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END User Info-->
+    </div>
+    <p:dialog resizable="false" header="#{msg['login.password']}" widgetVar="passwordDlg">
+        <h:form class="email-content">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <div class="email-content-body">
+                <div class="form-group-attached">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group-default required">
+                                <label>#{msg['login.newPassword']}</label>
+                                <h:inputText id="tauxAVION" required="true"
+                                             label="#{msg['login.newPassword']}"
+                                             styleClass="form-control input-lg"
+                                             value="#{changePasswordView.password}">
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-b-20">
+                    <div style="text-align: center" class="col-sm-12 m-t-10">
+                        <p:commandButton validateClient="true" onsuccess="PF('passwordDlg').hide();"
+                                         oncomplete="if (args &amp;&amp; !args.validationFailed) showNotification('#{msg['login.notification.password.success']}','success')"
+                                         value="#{msg['login.button.changePassword']}"
+                                         actionListener="#{changePasswordView.changePassword()}"
+                                         class="btn btn-complete btn-cons"/>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+</div>

@@ -1,0 +1,92 @@
+/*
+
+* Override Pages default styles or create your own styles here
+
+*/
+.myactive{
+    color: #FFFFFF;
+}
+.mypage{
+    position: fixed;
+    bottom: 0;
+    width: 20% !important;
+}
+.ui-inputfield {
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.calendar .ui-widget {
+    width: 100px;
+    box-shadow: none;
+    margin: 0;
+    outline: medium none;
+    padding: 2px;
+    font-weight: normal;
+    border:none;
+}
+#recherche li{
+    padding: 10px;
+}
+
+.ui-datatable.borderless thead th,
+.ui-datatable.borderless tbody,
+.ui-datatable.borderless tbody tr,
+.ui-datatable.borderless tbody td {
+    border-style: none;
+}
+
+.hide-column-names table thead tr {
+    display: none;
+}
+
+.ui-datatable-odd {
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    background: #daeffd;
+    color: #4f4f4f;
+    text-shadow: none;
+}
+
+.CURRENT-mission {
+    background: #FFFFFF;
+}
+
+.VCHEF-mission {
+    background: #befeb2;
+}
+
+.VDG-mission {
+    background: #8efe6f;
+}
+
+.RCHEF-mission {
+    background: #febbb8;
+}
+
+.RDG-mission {
+    background: #fe726d;
+}
+.DAF-mission {
+    background: #47b2fe;
+}
+.CANCELED-mission {
+    background: #fe9848;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #daeffd none;
+}
+
+.select-one-menu {
+    width: 100%;
+    height: 25px !important;
+    border: none;
+}
+
+.select-one-menu:focus {
+    background-color: #F0F0F0;
+}
+

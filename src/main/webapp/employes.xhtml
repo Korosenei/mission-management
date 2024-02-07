@@ -1,0 +1,672 @@
+<f:view xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+
+        <meta charset="utf-8"/>
+
+        <title>#{msg['configuration.title']}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <link media="screen" type="text/css" rel="stylesheet"
+              href="assets/plugins/bootstrap-datepicker/css/datepicker3.css"/>
+        <link rel="apple-touch-icon" href="pages/ico/60.png"/>
+        <link rel="apple-touch-icon" sizes="76x76" href="pages/ico/76.png"/>
+        <link rel="apple-touch-icon" sizes="120x120" href="pages/ico/120.png"/>
+        <link rel="apple-touch-icon" sizes="152x152" href="pages/ico/152.png"/>
+        <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+        <meta name="apple-touch-fullscreen" content="yes"/>
+
+        <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+
+        <meta content="" name="description"/>
+
+        <meta content="" name="author"/>
+        <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css"
+              media="screen"/>
+        <link href="assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen"/>
+        <link href="assets/plugins/switchery/css/switchery.min.css" rel="stylesheet" type="text/css" media="screen"/>
+        <link href="assets/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/plugins/jquery-menuclipper/jquery.menuclipper.css" rel="stylesheet" type="text/css"/>
+        <link href="pages/css/pages-icons.css" rel="stylesheet" type="text/css"/>
+        <link class="main-stylesheet" href="pages/css/pages.css" rel="stylesheet" type="text/css"/>
+        <!--[if lte IE 9]>
+            <link href="pages/css/ie9.css" rel="stylesheet" type="text/css" />
+        <![endif]-->
+
+        <script type="text/javascript">
+            function selectCurrentRow(table, index) {
+                table.unselectAllRows();
+                table.selectRow(index, false);
+            }
+            function unselectAll(table) {
+                table.unselectAllRows();
+            }
+            window.onload = function () {
+
+                // fix for windows 8
+                if (navigator.appVersion.indexOf("Windows NT 6.2") != -1)
+                    document.head.innerHTML += '&lt;link rel="stylesheet" type="text/css" href="pages/css/windows.chrome.fix.css" &gt;'
+            }
+        </script>
+
+    </h:head>
+    <h:body class="fixed-header   ">
+
+
+        <!-- END SIDEBPANEL-->
+        <!-- START PAGE-CONTAINER -->
+
+        <div class="page-container">
+            <!-- START HEADER -->
+
+            <ui:include src="header.xhtml"/>
+            <!-- END HEADER -->
+            <!-- START PAGE CONTENT WRAPPER -->
+
+            <div class="page-content-wrapper full-height">
+                <!-- START PAGE CONTENT -->
+
+                <div class="content full-height">
+                    <!-- START APP -->
+                    <!-- START SECONDARY SIDEBAR MENU-->
+                    <ui:include src="secondsidebar.xhtml"/>
+
+                    <!-- END SECONDARY SIDEBAR MENU -->
+
+                    <div class="inner-content full-height">
+
+                        <div class="split-view">
+                            <!-- START SPLIT LIST VIEW -->
+
+                            <div class="split-list">
+                                <a class="list-refresh" href="#"><i class="fa fa-refresh"/></a>
+                                <div data-email="list">
+                                    <!-- START EMAIL LIST SORTED BY DATE -->
+                                    <h:form id="tableForm">
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        <p:dataTable emptyMessage="#{msg['general.message.EmptyList']}" widgetVar="employeList" var="emp"
+                                                     styleClass="borderless hide-column-names"
+                                                     value="#{employeView.employes}"
+                                                     selectionMode="single"
+                                                     selection="#{employeView.selectedEmploye}"
+                                                     rowKey="#{emp.idEmploye}">
+                                            <p:ajax event="rowSelect" update="@(#employeDetail)"/>
+                                            <p:column>
+                                                <h:outputText value="#{emp.nom}"/>
+                                            </p:column>
+                                            <p:column>
+                                                <h:outputText value="#{emp.prenom}"/>
+                                            </p:column>
+                                            <p:column>
+                                                <h:outputText value="#{emp.fonction}"/>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </h:form>
+                                    <h:form>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        <h:selectOneMenu id="page"
+                                                         styleClass="select-one-menu mypage"
+                                                         value="#{employeView.page}">
+                                            <f:selectItems value="#{employeView.pages}"/>
+                                            <p:ajax update="tableForm" event="valueChange"
+                                                    listener="#{employeView.updateListWithPage()}"/>
+                                        </h:selectOneMenu>
+                                    </h:form>
+                                    <!-- END EMAIL LIST SORTED BY DATE -->
+                                </div>
+                            </div>
+                            <!-- END SPLIT LIST VIEW -->
+                            <!-- START SPLIT DETAILS -->
+                            <h:form id="employeDetail">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                                <div data-email="opened" class="split-details">
+                                    <div class="email-content-wrapper">
+
+                                        <div class="actions-wrapper menuclipper bg-master-lightest">
+
+                                            <ul class="actions menuclipper-menu no-margin p-l-20 ">
+                                                <li class="no-padding ">
+                                                    <p:commandLink process="@this"
+                                                                   onstart="unselectAll(PF('employeList'));"
+                                                                   update="@(#employeDetail)"
+                                                                   actionListener="#{employeView.newEmploye()}"
+                                                                   class="text-success">#{msg['employe.button.new']}</p:commandLink>
+                                                </li>
+                                                <c:if test="#{employeView.selectedEmploye != null}">
+                                                    <li class="no-padding ">
+                                                        <p:commandLink process="@this"
+                                                                       update="@(#employeDetail)"
+                                                                       actionListener="#{employeView.deleteEmploye()}"
+                                                                       class="text-success">#{msg['employe.button.delete']}
+                                                            <p:confirm header="#{msg['confirmation.deleteHeader']}"
+                                                                       message="#{msg['confirmation.deleteQuestion']}"
+                                                                       icon="ui-icon-alert"/>
+                                                        </p:commandLink>
+                                                    </li>
+                                                </c:if>
+
+                                            </ul>
+
+                                            <div class="clearfix"/>
+                                        </div>
+                                        <div class="email-content">
+                                            <c:if test="#{employeView.selectedEmploye != null}">
+
+                                                <div class="clearfix"/>
+
+                                                <div class="email-content-body m-t-20">
+                                                    <div class="form-group-attached">
+                                                        <div class="row clearfix">
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.civilite']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.civilite']}"
+                                                                                     id="civilite"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedEmploye.civilite}">
+                                                                        <f:selectItems
+                                                                                value="#{employeView.civilities}"/>
+                                                                        <f:converter binding="#{genericEnumConverter}"/>
+                                                                    </h:selectOneMenu>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.nom']}</label>
+                                                                    <h:inputText id="nom" required="true"
+                                                                                 label="#{msg['employe.nom']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 value="#{employeView.selectedEmploye.nom}">
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.prenom']}</label>
+                                                                    <h:inputText id="prenom" required="true"
+                                                                                 label="#{msg['employe.prenom']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 value="#{employeView.selectedEmploye.prenom}">
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row clearfix">
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.matricule']}</label>
+                                                                    <h:inputText id="matricule" required="true"
+                                                                                 label="#{msg['employe.matricule']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 value="#{employeView.selectedEmploye.matricule}">
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.fonction']}</label>
+                                                                    <h:inputText id="fonction" required="true"
+                                                                                 label="#{msg['employe.fonction']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 value="#{employeView.selectedEmploye.fonction}">
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.vehicule']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.vehicule']}"
+                                                                                     id="vehicule" required="true"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedEmploye.vehicule}">
+                                                                        <f:selectItem noSelectionOption="true"
+                                                                                      itemLabel="#{msg['employe.message.selectbank']}"
+                                                                                      itemValue=""/>
+                                                                        <f:selectItems value="#{employeView.vehicules}"
+                                                                                       var="v"
+                                                                                       itemValue="#{v}"
+                                                                                       itemLabel="#{v.marque} #{v.matricule}"
+                                                                        />
+                                                                        <f:converter for="vehicule"
+                                                                                     converterId="vehiculeConverter"/>
+                                                                    </h:selectOneMenu>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row clearfix">
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.grade']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.grade']}"
+                                                                                     id="grade" required="true"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedEmploye.grade}">
+                                                                        <f:selectItem noSelectionOption="true"
+                                                                                      itemLabel="#{msg['employe.message.selectbank']}"
+                                                                                      itemValue=""/>
+                                                                        <f:selectItems value="#{employeView.grades}"
+                                                                                       var="grd"
+                                                                                       itemValue="#{grd}"
+                                                                                       itemLabel="#{grd.label}"
+                                                                        />
+                                                                        <f:converter for="grade"
+                                                                                     converterId="gradeConverter"/>
+                                                                        <f:ajax render="employeDetail:gradelabel"/>
+                                                                    </h:selectOneMenu>
+                                                                    <h:panelGroup id="gradelabel">
+                                                                        <h:inputText
+                                                                                rendered="#{employeView.selectedEmploye.grade.type=='AUTRE'}"
+                                                                                styleClass="form-control input-lg"
+                                                                                value="#{employeView.selectedEmploye.grade.label}">
+                                                                        </h:inputText>
+                                                                    </h:panelGroup>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.director']}</label>
+                                                                    <p:selectBooleanCheckbox itemLabel="Oui" label="Oui"
+                                                                                             value="#{employeView.selectedEmploye.derictor}"/>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.dept']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.dept']}"
+                                                                                     id="dept"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedEmploye.dept}">
+                                                                        <f:selectItem noSelectionOption="true"
+                                                                                      itemLabel="#{msg['employe.message.selectbank']}"
+                                                                                      itemValue=""/>
+                                                                        <f:selectItems value="#{employeView.depts}"
+                                                                                       var="dept"
+                                                                                       itemValue="#{dept}"
+                                                                                       itemLabel="#{dept.nom}"
+                                                                        />
+                                                                        <f:converter for="dept"
+                                                                                     converterId="serviceConverter"/>
+                                                                    </h:selectOneMenu>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row clearfix">
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.bank']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.bank']}"
+                                                                                     id="bank" required="true"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedBank}">
+                                                                        <f:selectItem noSelectionOption="true"
+                                                                                      itemLabel="#{msg['employe.message.selectbank']}"
+                                                                                      itemValue=""/>
+                                                                        <f:selectItems value="#{employeView.banks}"
+                                                                                       var="bank"
+                                                                                       itemValue="#{bank}"
+                                                                                       itemLabel="#{bank.name}"
+                                                                        />
+                                                                        <f:converter for="bank"
+                                                                                     converterId="bankConverter"/>
+                                                                        <p:ajax event="valueChange" update="agence"/>
+                                                                    </h:selectOneMenu>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.agence']}</label>
+                                                                    <h:selectOneMenu label="#{msg['employe.agence']}"
+                                                                                     id="agence" required="true"
+                                                                                     styleClass="select-one-menu"
+                                                                                     value="#{employeView.selectedEmploye.agence}">
+                                                                        <f:selectItem noSelectionOption="true"
+                                                                                      itemLabel="#{msg['employe.message.selectbank']}"
+                                                                                      itemValue=""/>
+                                                                        <f:selectItems value="#{employeView.agences}"
+                                                                                       var="a"
+                                                                                       itemValue="#{a}"
+                                                                                       itemLabel="#{a.fullName}"
+                                                                        />
+                                                                        <f:converter for="agence"
+                                                                                     converterId="agenceConverter"/>
+                                                                    </h:selectOneMenu>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.rib']}</label>
+                                                                    <h:inputText id="rib" maxlength="14" required="true"
+                                                                                 label="#{msg['employe.rib']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 value="#{employeView.selectedEmploye.rib}">
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="form-group-default required">
+                                                                    <label>#{msg['employe.email']}</label>
+                                                                    <h:inputText id="email"
+                                                                                 label="#{msg['employe.email']}"
+                                                                                 styleClass="form-control input-lg"
+                                                                                 validatorMessage="Email Invalide"
+                                                                                 value="#{employeView.selectedEmploye.email}">
+                                                                        <f:validateRegex
+                                                                                pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                                                    </h:inputText>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row p-b-20">
+                                                        <div style="text-align: center" class="col-sm-11 m-t-30">
+
+                                                            <p:commandButton validateClient="true"
+                                                                             oncomplete="document.getElementById('employeDetail').reset(); if (args &amp;&amp; !args.validationFailed) showNotification('#{msg['employe.notification.success.save']}','success')"
+                                                                             value="#{msg['employe.button.save']}"
+                                                                             update="@(#employeDetail)"
+                                                                             actionListener="#{employeView.saveEmploye()}"
+                                                                             class="btn btn-complete btn-cons m-l-10"/>
+                                                            <p:commandButton id="reset"
+                                                                             onsuccess="showNotification('#{msg['employe.notification.success.initpassword']}','success')"
+                                                                             process="@this"
+                                                                             value="#{msg['employe.button.initpassword']}"
+                                                                             actionListener="#{employeView.initPassword()}"
+                                                                             class="btn btn-white btn-cons"/>
+                                                        </div>
+                                                    </div>
+                                                    <p:messages/>
+                                                </div>
+
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </h:form>
+
+                            <!-- END SPLIT DETAILS -->
+                            <!-- START COMPOSE BUTTON FOR TABS -->
+
+                            <div class="compose-wrapper visible-xs">
+                                <a class="compose-email text-info pull-right m-r-10 m-t-10" href="addmission"><i
+                                        class="fa fa-pencil-square-o"/></a>
+                            </div>
+                            <!-- END COMPOSE BUTTON -->
+                        </div>
+                    </div>
+                    <!-- END APP -->
+                </div>
+                <!-- END PAGE CONTENT -->
+            </div>
+            <!-- END PAGE CONTENT WRAPPER -->
+        </div>
+        <!-- END PAGE CONTAINER -->
+
+        <!-- START OVERLAY -->
+
+        <div class="overlay hide" data-pages="search">
+            <!-- BEGIN Overlay Content !-->
+
+            <div class="overlay-content has-results m-t-20">
+                <!-- BEGIN Overlay Header !-->
+
+                <div class="container-fluid">
+                    <!-- BEGIN Overlay Logo !-->
+                    <img class="overlay-brand" src="assets/img/logo.png" alt="logo" data-src="assets/img/logo.png"
+                         data-src-retina="assets/img/logo_2x.png" width="78" height="22"/>
+                    <!-- END Overlay Logo !-->
+                    <!-- BEGIN Overlay Close !-->
+                    <a href="#" class="close-icon-light overlay-close text-black fs-16">
+                        <i class="pg-close"/>
+                    </a>
+                    <!-- END Overlay Close !-->
+                </div>
+                <!-- END Overlay Header !-->
+
+                <div class="container-fluid">
+                    <!-- BEGIN Overlay Controls !-->
+                    <input id="overlay-search" class="no-border overlay-search bg-transparent" placeholder="Search..."
+                           autocomplete="off" spellcheck="false"/>
+                    <br/>
+
+                    <div class="inline-block">
+
+                        <div class="checkbox right">
+                            <input id="checkboxn" type="checkbox" value="1" checked="checked"/>
+                            <label for="checkboxn"><i class="fa fa-search"/> Search within page</label>
+                        </div>
+                    </div>
+
+                    <div class="inline-block m-l-10">
+
+                        <p class="fs-13">Press enter to search</p>
+                    </div>
+                    <!-- END Overlay Controls !-->
+                </div>
+                <!-- BEGIN Overlay Search Results, This part is for demo purpose, you can add anything you like !-->
+
+                <div class="container-fluid">
+          <span>
+                <strong>suggestions :</strong>
+            </span>
+                    <span id="overlay-suggestions"/>
+                    <br/>
+
+                    <div class="search-results m-t-40">
+
+                        <p class="bold">Pages Search Results</p>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular bg-success text-white inline m-t-10">
+
+                                        <div>
+                                            <img width="50" height="50" src="assets/img/profiles/avatar.jpg"
+                                                 data-src="assets/img/profiles/avatar.jpg"
+                                                 data-src-retina="assets/img/profiles/avatar2x.jpg" alt=""/>
+                                        </div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5"><span class="semi-bold result-name">ice cream</span> on pages
+                                        </h5>
+
+                                        <p class="hint-text">via john smith</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular bg-success text-white inline m-t-10">
+
+                                        <div>T</div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5"><span
+                                                class="semi-bold result-name">ice cream</span> related topics</h5>
+
+                                        <p class="hint-text">via pages</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular bg-success text-white inline m-t-10">
+
+                                        <div><i class="fa fa-headphones large-text "/>
+                                        </div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5"><span class="semi-bold result-name">ice cream</span> music
+                                        </h5>
+
+                                        <p class="hint-text">via pagesmix</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                            </div>
+
+                            <div class="col-md-6">
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular bg-info text-white inline m-t-10">
+
+                                        <div><i class="fa fa-facebook large-text "/>
+                                        </div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5"><span
+                                                class="semi-bold result-name">ice cream</span> on facebook</h5>
+
+                                        <p class="hint-text">via facebook</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular bg-complete text-white inline m-t-10">
+
+                                        <div><i class="fa fa-twitter large-text "/>
+                                        </div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5">Tweats on<span class="semi-bold result-name"> ice cream</span>
+                                        </h5>
+
+                                        <p class="hint-text">via twitter</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                                <!-- BEGIN Search Result Item !-->
+
+                                <div class="">
+                                    <!-- BEGIN Search Result Item Thumbnail !-->
+
+                                    <div class="thumbnail-wrapper d48 circular text-white bg-danger inline m-t-10">
+
+                                        <div><i class="fa fa-google-plus large-text "/>
+                                        </div>
+                                    </div>
+                                    <!-- END Search Result Item Thumbnail !-->
+
+                                    <div class="p-l-10 inline p-t-5">
+
+                                        <h5 class="m-b-5">Circles on<span
+                                                class="semi-bold result-name"> ice cream</span></h5>
+
+                                        <p class="hint-text">via google plus</p>
+                                    </div>
+                                </div>
+                                <!-- END Search Result Item !-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END Overlay Search Results !-->
+            </div>
+            <!-- END Overlay Content !-->
+        </div>
+        <!-- END OVERLAY -->
+        <!-- BEGIN VENDOR JS -->
+
+        <script src="assets/plugins/pace/pace.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery/jquery-1.11.1.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/modernizr.custom.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/boostrapv3/js/bootstrap.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery/jquery-easy.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery-bez/jquery.bez.min.js"></script>
+
+        <script src="assets/plugins/jquery-ios-list/jquery.ioslist.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/jquery-actual/jquery.actual.min.js"></script>
+
+        <script src="assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+        <script type="text/javascript" src="assets/plugins/bootstrap-select2/select2.min.js"></script>
+
+        <script type="text/javascript" src="assets/plugins/classie/classie.js"></script>
+
+        <script src="assets/plugins/switchery/js/switchery.min.js" type="text/javascript"></script>
+
+        <script src="assets/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+
+        <script src="assets/plugins/jquery-menuclipper/jquery.menuclipper.js"></script>
+        <script src="assets/plugins/jquery-inputmask/jquery.inputmask.min.js" type="text/javascript"/>
+
+        <script type="text/javascript" src="assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"/>
+
+        <script>
+            $(document).ready(function () {
+                $('#myDatepicker').datepicker();
+            });
+        </script>
+        <!-- END VENDOR JS -->
+        <!-- BEGIN CORE TEMPLATE JS -->
+
+        <script src="pages/js/pages.min.js"></script>
+
+        <!--<script src="pages/js/pages.email.js" type="text/javascript"></script>-->
+        <!-- END CORE TEMPLATE JS -->
+        <!-- BEGIN PAGE LEVEL JS -->
+
+        <script src="assets/js/scripts.js" type="text/javascript"></script>
+        <script src="assets/js/custom.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL JS -->
+    </h:body></f:view>
